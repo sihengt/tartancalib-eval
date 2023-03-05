@@ -87,7 +87,7 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     os.system(exp_3_command)
     
     # Convert corners into numpy array + save into results.
-    np_corners = numpify_orpc_corners(result_filename, DELTILLE_DATA_INDEX, DELTILLE_COORD_INDEX)
+    np_corners,n_features = numpify_orpc_corners(result_filename, DELTILLE_DATA_INDEX, DELTILLE_COORD_INDEX)
     np_folder = os.path.join(results_filepath, "deltille")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
@@ -96,7 +96,7 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     print("Written {} np_corners to: {}".format(np_corners, deltille_np_fp))
     with open(deltille_np_fp, 'wb') as f:
         np.save(f, np_corners)
-    corners_dict['deltille'] = len(np_corners)
+    corners_dict['deltille'] = n_features
 
     # Experiment 4: Aruco
     # if RUN_EXPERIMENT_4:

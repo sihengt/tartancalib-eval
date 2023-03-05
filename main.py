@@ -29,6 +29,11 @@ def main():
         required=True,
         help='Folder to store results in.'
     )
+    parser.add_argument(
+        '-t',
+        '--topic',
+        default = "/camera_0/image_raw"
+    )
     args = parser.parse_args()
     assert os.path.isdir(args.input_folder), "Check input folder. You entered: {}".format(args.input_folder)
     assert os.path.isdir(args.results_folder), "Check results folder. You entered: {}".format(args.results_folder)
@@ -39,7 +44,8 @@ def main():
     # Make a loop and do this:
     for f in bag_files:
         bag_name = f.split('.bag')[0]
-        image_topic = "/camera_0/image_raw" # TODO: un-hardcode this.
+        image_topic = args.topic # TODO: un-hardcode this.
+        print(image_topic)
         # print("jpg_fn={}".format(os.path.join(args.input_folder, JPEG_FOLDER_PREFIX, jpg_fn)))
         jpg_path = os.path.join(args.input_folder, JPEG_FOLDER_PREFIX, bag_name)
         if not os.path.isdir(jpg_path):

@@ -58,12 +58,12 @@ Input folder must be a folder containing rosbags. E.g.
 
 Output CSV will be found in results folder as `total_corners_detected.csv` in the following format:
 ```
-	    Deltille	AT3	    Kaess-AT3	ArUco
-cam1	7291	    4908    5896	    2152
-cam2    20055       20      592         10191
-cam3    830         8202    10          8101
-cam4	3001	    2548	2996	    2420
-cam5    20          50      3033        808
+	Deltille	AT3	    	Kaess-AT3	ArUco
+cam1	7291	    	4908    	5896	    	2152
+cam2    20055       	20      	592         	10191
+cam3    830         	8202    	10          	8101
+cam4	3001	    	2548		2996	    	2420
+cam5    20          	50      	3033        	808
 ```
 
 Output also includes `.pkl` files (pickled lists of lists) named in the following format `$detectiontype/$detectiontype-$bagname.npy`.

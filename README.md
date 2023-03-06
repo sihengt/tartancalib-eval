@@ -66,6 +66,7 @@ cam4	3001	    2548	2996	    2420
 cam5    20          50      3033        808
 ```
 
-Output also includes `.npy` files (numpy arrays) named in the following format `$detectiontype/$detectiontype-$bagname.npy`.
+Output also includes `.pkl` files (pickled lists of lists) named in the following format `$detectiontype/$detectiontype-$bagname.npy`.
+Each `.pkl` file contains a list of lists of shape (n_frames, n_corners_in_frame). For each frame, if no detections are detected, an empty list will be appended still.
 
-Use the .npy files in conjunction with your script if you'd like to generate corners vs. polar angle.
+Use the `.pkl` files in conjunction with your script if you'd like to generate corners vs. polar angle.

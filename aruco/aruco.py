@@ -2,6 +2,7 @@ import cv2
 import glob
 import os
 import numpy as np
+import pickle
 
 # Setting up ArUco detector
 arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_APRILTAG_36h11)
@@ -74,18 +75,22 @@ def aruco_experiment(image_folder, result_folder, result_bag_name):
 
 	l_image_corner = []
 	all_corners = []
+	frame_n = 0
+	n_corners = 0
 	for image_fp in all_image_fp:
+		frame_corners = []
 		image = cv2.imread(image_fp)
 		if not image is None:
-			corners, n_corners = count_corners(image, viz=False)
+			corners, current_n_corners = count_corners(image, viz=False)
 			for c in corners:
-				all_corners.append(c)			
-			l_image_corner.append(n_corners)
+				frame_corners.append([frame_n, c[0], c[1]])
+				n_corners += 1
+			l_image_corner.append(current_n_corners)
 			print("Image = {}\tCorners detected={}".format(image_fp, n_corners))
 		else:
 			print("{} is not an image.".format(image_fp))
-
-		np_corners = np.array(all_corners)
+		all_corners.append(frame_corners)
+		frame_n += 1
 	
 	# Take the list of image corners and write it.
 	if not os.path.isdir(result_folder):
@@ -93,14 +98,14 @@ def aruco_experiment(image_folder, result_folder, result_bag_name):
 	np_fp = os.path.join(result_folder, "aruco-" + result_bag_name + ".npy")
 	txt_fp = os.path.join(result_folder, "aruco-" + result_bag_name + ".txt")
 	with open(np_fp, 'wb') as f:
-		np.save(np_fp, np_corners)
+		pickle.dump(all_corners, f)
 
 	f = open(txt_fp, "w")
 	# print(l_image_corner)
 	f.write("total:{}\n".format(sum(l_image_corner)))
 	f.write("frame_n,corners\n")
-	for i, n_corners in enumerate(l_image_corner):
-		f.write("{},{}".format(i,str(n_corners)+"\n"))
+	for i, frame_corners in enumerate(l_image_corner):
+		f.write("{},{}".format(i,str(frame_corners)+"\n"))
 	f.close()
 
-	return len(np_corners)
+	return n_corners

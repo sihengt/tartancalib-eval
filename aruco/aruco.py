@@ -4,21 +4,22 @@ import os
 import numpy as np
 import pickle
 
-# Setting up ArUco detector
-arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_APRILTAG_36h11)
-arucoParams = cv2.aruco.DetectorParameters_create()
-arucoParams.markerBorderBits = 2
-arucoParams.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
-arucoParams.cornerRefinementWinSize = 10
-arucoParams.adaptiveThreshWinSizeStep = 2
-
 # Uses ArUco detector to count corners. Includes flag for visualization.
+
 def count_corners(image, viz=False):
+	# arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_APRILTAG_36h11)
+	arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_APRILTAG_36h11)
+
+	arucoParams = cv2.aruco.DetectorParameters_create()
+	arucoParams.markerBorderBits = 2
+	# arucoParams.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX
+	# arucoParams.cornerRefinementWinSize = 2
+	arucoParams.adaptiveThreshWinSizeStep = 1
+
 	total_corners = 0
 	all_corners = []
 	(corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict,
 		parameters=arucoParams)
-
 	if viz:
 		# verify *at least* one ArUco marker was detected
 		viz_corners = corners
@@ -53,6 +54,21 @@ def count_corners(image, viz=False):
 					0.5, (0, 255, 0), 2)
 				print("[INFO] ArUco marker ID: {}".format(markerID))
 				# show the output image
+			
+			for rejectCorner in rejected:
+				reject_corners = rejectCorner.reshape((4, 2))
+				(topLeft, topRight, bottomRight, bottomLeft) = reject_corners
+				topRight = (int(topRight[0]), int(topRight[1]))
+				bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
+				bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
+				topLeft = (int(topLeft[0]), int(topLeft[1]))
+
+				# draw the bounding box of the ArUCo detection
+				cv2.line(image, topLeft, topRight, (255, 0, 0), 2)
+				cv2.line(image, topRight, bottomRight, (255, 0, 0), 2)
+				cv2.line(image, bottomRight, bottomLeft, (255, 0, 0), 2)
+				cv2.line(image, bottomLeft, topLeft, (255, 0, 0), 2)
+
 			cv2.imshow("Image", image)
 			cv2.waitKey(0)
 
@@ -69,6 +85,7 @@ def count_corners(image, viz=False):
 	return all_corners, total_corners
 
 def aruco_experiment(image_folder, result_folder, result_bag_name):
+	# Setting up ArUco detector
 	all_image_fp = glob.glob(os.path.join(image_folder,"*.jpg"))
 	# Sorting by image #
 	all_image_fp.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))

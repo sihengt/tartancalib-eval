@@ -5,6 +5,7 @@ from scripts.detector_evaluation.process_orpc import numpify_corners, numpify_or
 from aruco import aruco
 import numpy as np
 import pandas as pd
+import pickle
 def glob_this(filepath):
     return glob.glob(os.path.join(filepath,"*"))
 
@@ -18,7 +19,9 @@ def run_experiments(image_folder, results_filepath, repo_folder):
 
     result_bag_name = image_folder.split('/')[-1]
 
-    # Experiment 1: Kaess's AT.
+    #############################
+    # Experiment 1: Kaess's AT. #
+    #############################
     # if RUN_EXPERIMENT_1:
         # DATA_INDEX / COORD_INDEX are constants for each experiment type.
         # Expresses in which index you may retrieve relevant information.
@@ -33,21 +36,24 @@ def run_experiments(image_folder, results_filepath, repo_folder):
 
     exp_1_command = KAESS_AT_COMMAND + " " + image_folder + "/*.jpg" + " -o " + result_filename
     print("EXPERIMENT 1: {}".format(exp_1_command))
-    os.system(exp_1_command)
+    # os.system(exp_1_command)
 
     # Convert corners into numpy array + save into results.
-    np_corners = numpify_corners(result_filename, KAESS_AT3_DATA_INDEX, KAESS_AT3_COORD_INDEX)
+    n_corners, np_corners = numpify_corners(result_filename, KAESS_AT3_DATA_INDEX, KAESS_AT3_COORD_INDEX)
     np_folder = os.path.join(results_filepath, "kaess-at")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
-    kaess_np_fp = os.path.join(np_folder, "kaess_AT3-" + result_bag_name + ".npy")
+    kaess_np_fp = os.path.join(np_folder, "kaess_AT3-" + result_bag_name + ".pkl")
 
-    print("Written {} np_corners to: {}".format(np_corners, kaess_np_fp))
+    print("Writing {} corners to: {}".format(n_corners, kaess_np_fp))
+    print(len(np_corners))
     with open(kaess_np_fp, 'wb') as f:
-        np.save(f, np_corners)
-    corners_dict['kaess-at3'] = len(np_corners)
-    # Experiment 2: Apriltag3 AT.
-    # if RUN_EXPERIMENT_2:
+        pickle.dump(np_corners, f)
+    corners_dict['kaess-at3'] = n_corners
+
+    ###############################
+    # Experiment 2: Apriltag3 AT. #
+    ###############################
     AT3_DATA_INDEX = 0
     AT3_COORD_INDEX = 0
 
@@ -61,18 +67,19 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     os.system(exp_2_command)
 
     # Convert corners into numpy array + save into results.
-    np_corners = numpify_corners(result_filename, AT3_DATA_INDEX, AT3_COORD_INDEX)
+    np_corners = numpify_corners(result_filename, AT3_DATA_INDEX, AT3_COORD_INDEX) 
     np_folder = os.path.join(results_filepath, "AT3")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
-    at3_np_fp = os.path.join(np_folder, "AT3-" + result_bag_name + ".npy")
-
-    print("Written {} np_corners to: {}".format(np_corners, at3_np_fp))
+    at3_np_fp = os.path.join(np_folder, "AT3-" + result_bag_name + ".pkl")
+    # print("Written {} np_corners to: {}".format(np_corners, at3_np_fp))
     with open(at3_np_fp, 'wb') as f:
         np.save(f, np_corners)
     corners_dict['at3'] = len(np_corners)
 
-    # Experiment 3: Deltille.
+    ###########################
+    # Experiment 3: Deltille. #
+    ###########################
     # if RUN_EXPERIMENT_3:
     DELTILLE_DATA_INDEX = 5
     DELTILLE_COORD_INDEX = 3
@@ -87,7 +94,8 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     os.system(exp_3_command)
     
     # Convert corners into numpy array + save into results.
-    np_corners,n_features = numpify_orpc_corners(result_filename, DELTILLE_DATA_INDEX, DELTILLE_COORD_INDEX)
+    np_corners, n_features = numpify_orpc_corners(result_filename, DELTILLE_DATA_INDEX, DELTILLE_COORD_INDEX) # Technically doesn't numpify.
+
     np_folder = os.path.join(results_filepath, "deltille")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
@@ -98,7 +106,9 @@ def run_experiments(image_folder, results_filepath, repo_folder):
         np.save(f, np_corners)
     corners_dict['deltille'] = n_features
 
-    # Experiment 4: Aruco
+    #######################
+    # Experiment 4: Aruco #
+    #######################
     # if RUN_EXPERIMENT_4:
         # ARUCO_DATA_INDEX = None
         # ARUCO_COORD_INDEX = 3

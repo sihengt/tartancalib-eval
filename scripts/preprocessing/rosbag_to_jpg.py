@@ -26,7 +26,7 @@ def rosbag_to_jpg(bag_file, output_dir, image_topic):
     bridge = CvBridge()
     count = 0
     for _topic, msg, _ts in bag.read_messages(topics=[image_topic]):
-        cv_img = bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
+        cv_img = bridge.imgmsg_to_cv2(msg, desired_encoding="mono8")
 
         cv2.imwrite(os.path.join(output_dir,
                     "frame%06i.jpg" % count), cv_img)

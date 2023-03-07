@@ -35,23 +35,24 @@ class GT_compare:
         for method in self.methods:
             print("Evaluating method {0}".format(method.name))
             for i, frame_features in enumerate(method.data):
-                if (len(np.shape(frame_features)) == 3):
-                    frame_features = np.array(frame_features).reshape((-1,2))
-                gt = self.GT[i]
-                for feature in frame_features:
-                    if (len(feature) ==3):
-                        feature = feature[1:]
+                if (len(np.shape(frame_features)) >1 and np.shape(frame_features)[1]>  0):
+                    if (len(np.shape(frame_features)) == 3):
+                        frame_features = np.array(frame_features).reshape((-1,2))
+                    gt = self.GT[i]
+                    for feature in frame_features:
+                        if (len(feature) ==3):
+                            feature = feature[1:]
+                            
+                        feature = np.array(feature).reshape((2,1))
+                        gt_dists = gt-feature
+                        dists = np.linalg.norm(gt_dists,axis=1)
                         
-                    feature = np.array(feature).reshape((2,1))
-                    gt_dists = gt-feature
-                    dists = np.linalg.norm(gt_dists,axis=1)
-                    
-                    method.errors.append(np.min(dists))
-                    # print("new")
-                    # print(gt[0])
-                    # print(feature)
-                    # print(print(gt_dists[0]))
-                    # print(gt_dists.shape)
+                        method.errors.append(np.min(dists))
+                        # print("new")
+                        # print(gt[0])
+                        # print(feature)
+                        # print(print(gt_dists[0]))
+                        # print(gt_dists.shape)
             print("Mean error of method {0} is {1} [px]".format(method.name,np.mean(method.errors)) )
 
 

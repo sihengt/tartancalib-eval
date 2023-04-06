@@ -2,7 +2,7 @@ import os
 import argparse
 import sys
 import pandas as pd
-
+import glob 
 from scripts.preprocessing import rosbag_to_jpg as ros2jpg
 from scripts.detector_evaluation.run_experiments import run_experiments
 
@@ -11,7 +11,9 @@ TARTANCALIB_EVAL_FOLDER = sys.path[0]
 
 def get_bag_filenames(input_folder):
     """ Helper function to get all bagfiles """
-    bag_files = [f for f in os.listdir(input_folder) if f.endswith('.bag')]
+    # bag_files = [f for f in os.listdir(input_folder) if f.endswith('.bag')]
+    bag_files = glob.glob(os.path.join(input_folder,'**/*.bag'))
+    print(bag_files)
     return bag_files
 
 def main():
@@ -58,6 +60,7 @@ def main():
     for f in bag_files:
         bag_name = f.split('.bag')[0]
         jpg_path = os.path.join(args.input_folder, JPEG_FOLDER_PREFIX, bag_name)
+        print(jpg_path)
         corners_dict = run_experiments(jpg_path, args.results_folder, TARTANCALIB_EVAL_FOLDER) 
         
         table_data[bag_name] = [

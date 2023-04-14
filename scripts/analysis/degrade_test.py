@@ -4,14 +4,14 @@ import seaborn as sns
 from mlxtend.plotting import plot_confusion_matrix
 import matplotlib.pyplot as plt
 
-experiment_input = 'results/total_corners_detected.csv'
-detectors = ['Deltille','AT3','Kaess-AT3','ArUco']
+experiment_input = 'results/merged_results.csv'
+detectors = ['Deltille','AT3','Kaess-AT3','ArUco','TartanCalib']
 
 
 
 
 class Experiment:
-    def __init__(self,filename,deltille,at3,kaess,aruco):
+    def __init__(self,filename,deltille,at3,kaess,aruco,tartancalib):
         self.filename = filename
         self.extract_params()
         
@@ -20,6 +20,7 @@ class Experiment:
         self.detections['AT3'] = at3 
         self.detections['Kaess-AT3'] = kaess 
         self.detections['ArUco'] = aruco 
+        self.detections['TartanCalib'] = tartancalib  
 
     def extract_params(self):
         self.folder = self.filename.split('/')[-1]
@@ -37,7 +38,7 @@ class Experiment:
 df = pd.read_csv(experiment_input)
 experiments = []
 for i, file in enumerate(df['File']):
-    experiment = Experiment(file,df['Deltille'][i],df['AT3'][i],df['Kaess-AT3'][i],df['ArUco'][i])
+    experiment = Experiment(file,df['Deltille'][i],df['AT3'][i],df['Kaess-AT3'][i],df['ArUco'][i],df['TartanCalib'][i])
     experiments.append(experiment)
 
 alpha_s = []
@@ -63,8 +64,8 @@ for experiment in experiments:
         matrices[detector][get_idx(experiment.alpha,experiment.blur_window)] += experiment.detections[detector]
 
 
-fig, axs = plt.subplots(2,2)
-idxs = [axs[0,0],axs[0,1],axs[1,0],axs[1,1]]
+fig, axs = plt.subplots(2,3)
+idxs = [axs[0,0],axs[0,1],axs[0,2],axs[1,0],axs[1,1]]
 cbar_ax = fig.add_axes([.91, .3, .03, .4])
 
 for i, detector in enumerate(detectors):

@@ -1,7 +1,7 @@
 import pandas as pd
 
-siheng_input = 'results/total_corners_detected.csv'
-tartan_input = 'results/tartan_results.csv'
+siheng_input = 'results/noise/total_corners_detected.csv'
+tartan_input = 'results/noise/tartan_results.csv'
 output = 'results/merged_results.csv'
 
 detectors = ['Deltille','AT3','Kaess-AT3','ArUco','TartanCalib']

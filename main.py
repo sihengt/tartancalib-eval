@@ -45,14 +45,17 @@ def main():
 
     # Make a loop and do this:
     for f in bag_files:
+        # remove '.bag" from bag_name string
         bag_name = f.split('.bag')[0]
+        print(f)
+        print(bag_name)
         image_topic = args.topic # TODO: un-hardcode this.
         print(image_topic)
         # print("jpg_fn={}".format(os.path.join(args.input_folder, JPEG_FOLDER_PREFIX, jpg_fn)))
         jpg_path = os.path.join(args.input_folder, JPEG_FOLDER_PREFIX, bag_name)
         if not os.path.isdir(jpg_path):
             os.makedirs(jpg_path)
-        ros2jpg.rosbag_to_jpg(os.path.join(args.input_folder, f), jpg_path, image_topic)
+        ros2jpg.rosbag_to_jpg(f, jpg_path, image_topic)
 
     # Part 2: run experiments
     

@@ -82,5 +82,15 @@ class GT_compare:
             print("Loading {0} with shape {1}".format(self.methods[-1].name,np.shape(self.methods[-1].data)))
 
 if __name__ == '__main__':
+    # create pandas dataframe with name and error as columns 
+    df = pd.DataFrame(columns=['name','error'])
+
+
     for experiment in glob.glob(os.path.join(args.experiments,'**')):
-        GT_compare(experiment,args.output)
+        gt_results = GT_compare(experiment,args.output)
+        for method in gt_results.methods:
+            # df = pd.concat([df,pd.DataFrame([method.name,np.mean(method.errors)])],ignore_index=True)
+            df.loc[len(df)]  = [method.name,np.mean(method.errors)]
+    # save dataframe to csv
+    df.to_csv(args.output)
+

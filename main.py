@@ -12,7 +12,9 @@ TARTANCALIB_EVAL_FOLDER = sys.path[0]
 def get_bag_filenames(input_folder):
     """ Helper function to get all bagfiles """
     # bag_files = [f for f in os.listdir(input_folder) if f.endswith('.bag')]
-    bag_files = glob.glob(os.path.join(input_folder,'**/*.bag'))
+    # bag_files = glob.glob(os.path.join(input_folder,'**/*.bag'))
+    os.chdir(input_folder)
+    bag_files = glob.glob('*.bag')
     print(bag_files)
     return bag_files
 

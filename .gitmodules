@@ -1,9 +1,9 @@
 [submodule "kaess-apriltags"]
 	path = kaess-apriltags
-	url = https://github.com/seeeheng/apriltags
+	url = https://github.com/YuanJunbin/apriltags
 [submodule "apriltag"]
 	path = apriltag
-	url = https://github.com/seeeheng/apriltag
+	url = https://github.com/YuanJunbin/apriltag
 [submodule "deltille"]
 	path = deltille
-	url = https://github.com/seeeheng/deltille
+	url = https://github.com/YuanJunbin/deltille

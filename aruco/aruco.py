@@ -17,7 +17,8 @@ def count_corners(image, viz=False):
 	arucoParams.adaptiveThreshWinSizeStep = 1
 
 	total_corners = 0
-	all_corners = []
+	# all_corners = []
+	all_corners_w_id = []
 	(corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict,
 		parameters=arucoParams)
 	if viz:
@@ -77,12 +78,13 @@ def count_corners(image, viz=False):
 			# extract the marker corners (which are always returned in
 			# top-left, top-right, bottom-right, and bottom-left order)
 			current_corners = markerCorner.reshape((4, 2))
-			
-			for c in current_corners:
-				all_corners.append(c)
 			total_corners += len(current_corners)
+			
+			# for c in current_corners:
+			# 	all_corners.append(c)
+			all_corners_w_id.append((markerCorner, markerID))
 
-	return all_corners, total_corners
+	return all_corners_w_id, total_corners
 
 def aruco_experiment(image_folder, result_folder, result_bag_name):
 	# Setting up ArUco detector
@@ -98,21 +100,29 @@ def aruco_experiment(image_folder, result_folder, result_bag_name):
 		frame_corners = []
 		image = cv2.imread(image_fp)
 		if not image is None:
-			corners, current_n_corners = count_corners(image, viz=False)
-			for c in corners:
-				frame_corners.append([frame_n, c[0], c[1]])
-				n_corners += 1
+			corners_w_id, current_n_corners = count_corners(image, viz=False)
+			for c in corners_w_id:
+				corner_pix = c[0].reshape((4, 2))
+				corner_id = c[1][0]
+				corner_seq = 0
+				corner_dict = {0:1, 1:0, 2:3, 3:2}
+				for pix in corner_pix:
+					frame_corners.append([frame_n, corner_id * 4 + corner_dict[corner_seq], pix[0], pix[1]])
+					corner_seq += 1
+					n_corners += 1
 			l_image_corner.append(current_n_corners)
 			print("Image = {}\tCorners detected={}".format(image_fp, n_corners))
 		else:
 			print("{} is not an image.".format(image_fp))
-		all_corners.append(frame_corners)
+		sorted_corners = sorted(frame_corners, key=lambda x: x[1])
+		all_corners.append(sorted_corners)
 		frame_n += 1
 	
 	# Take the list of image corners and write it.
 	if not os.path.isdir(result_folder):
 		os.makedirs(result_folder)
 	np_fp = os.path.join(result_folder, "aruco-" + result_bag_name + ".npy")
+	# txt_fp = os.path.join(result_folder, "aruco-" + result_bag_name + ".txt")
 	txt_fp = os.path.join(result_folder, "aruco-" + result_bag_name + ".txt")
 	with open(np_fp, 'wb') as f:
 		pickle.dump(all_corners, f)

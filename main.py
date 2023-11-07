@@ -15,7 +15,12 @@ def get_bag_filenames(input_folder):
     # bag_files = glob.glob(os.path.join(input_folder,'**/*.bag'))
     os.chdir(input_folder)
     bag_files = glob.glob('*.bag')
+    for i, bag_name in enumerate(bag_files):
+        full_bag_name = os.path.join(input_folder, bag_name)
+        bag_files[i] = full_bag_name
     print(bag_files)
+    bag_files = ['/home/junbin/calib_eval_ws/bags/test.bag']
+    # bag_files = ['/home/junbin/calib_eval_ws/bags/gopro-6x6-sep12-500f.bag']
     return bag_files
 
 def main():

@@ -43,7 +43,7 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     np_folder = os.path.join(results_filepath, "kaess-at")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
-    kaess_np_fp = os.path.join(np_folder, "kaess_AT3-" + result_bag_name + ".pkl")
+    kaess_np_fp = os.path.join(np_folder, "kaess_AT3-" + result_bag_name + ".npy")
 
     print("Writing {} corners to: {}".format(n_corners, kaess_np_fp))
     print(len(np_corners))
@@ -71,7 +71,7 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     np_folder = os.path.join(results_filepath, "AT3")
     if not os.path.isdir(np_folder):
         os.makedirs(np_folder)
-    at3_np_fp = os.path.join(np_folder, "AT3-" + result_bag_name + ".pkl")
+    at3_np_fp = os.path.join(np_folder, "AT3-" + result_bag_name + ".npy")
     print("Writing {} corners to: {}".format(n_corners, at3_np_fp))
     with open(at3_np_fp, 'wb') as f:
         pickle.dump(np_corners, f)
@@ -82,7 +82,7 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     ###########################
     # if RUN_EXPERIMENT_3:
     DELTILLE_DATA_INDEX = 5
-    DELTILLE_COORD_INDEX = 3
+    DELTILLE_COORD_INDEX = 0
     BOARD_FILEPATH = os.path.join(repo_folder, "boards", "april_6x6.dsc")
 
     result_folder = os.path.join(results_filepath, "deltille")

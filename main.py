@@ -20,6 +20,7 @@ def get_bag_filenames(input_folder):
         bag_files[i] = full_bag_name
     print(bag_files)
     bag_files = ['/home/junbin/calib_eval_ws/bags/test.bag']
+    # bag_files = ['/home/junbin/calib_eval_ws/bags/rotated.bag']
     # bag_files = ['/home/junbin/calib_eval_ws/bags/gopro-6x6-sep12-500f.bag']
     return bag_files
 

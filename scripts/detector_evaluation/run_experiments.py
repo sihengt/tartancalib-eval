@@ -116,5 +116,46 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     result_folder = os.path.join(results_filepath, "aruco")
     corners_dict['aruco'] = aruco.aruco_experiment(image_folder, result_folder, result_bag_name)
 
+    # 2: Kaess-AT, 3: AT, 4: deltille, 5:aruco
+    def record_detection_to_table(np_corners, detect_array, detector_idx):
+        for frames in np_corners:
+            for corner_frame in frames:
+                print("corner is", corner_frame)
+                frame_id = corner_frame[0]
+                corner_id = corner_frame[1]
+                detect_array[frame_id, corner_id, detector_idx] = 1
+
+    img_count = len(glob.glob1(image_folder, "*.jpg"))
+    detection_list = []
+    print("image number is", img_count)
+    for frame_num in range(img_count):
+        corners = []
+        for corner_id in range(144):
+            corners.append([frame_num, corner_id, 0, 0, 0, 0])
+        detection_list.append(corners)
+
+    detection_array = np.array(detection_list).astype(int)
+    
+    k_at3_path = os.path.join(results_filepath, "kaess-at", "kaess_AT3-" + result_bag_name + ".npy")
+    np_corners = np.load(k_at3_path, allow_pickle = True)
+    record_detection_to_table(np_corners, detection_array, 2)
+
+    at3_path = os.path.join(results_filepath, "AT3", "AT3-" + result_bag_name + ".npy")
+    np_corners = np.load(at3_path, allow_pickle = True)
+    record_detection_to_table(np_corners, detection_array, 3)
+
+    deltille_path = os.path.join(results_filepath, "deltille", "deltille-" + result_bag_name + ".npy")
+    np_corners = np.load(deltille_path, allow_pickle = True)
+    record_detection_to_table(np_corners, detection_array, 4)
+
+    aruco_path = os.path.join(results_filepath, "aruco", "aruco-" + result_bag_name + ".npy")
+    np_corners = np.load(aruco_path, allow_pickle = True)
+    record_detection_to_table(np_corners, detection_array, 5)
+
+    result_path = os.path.join(results_filepath, "detection_results-" + result_bag_name + ".csv")
+    detection_array_2d = detection_array.reshape(-1, 6)
+    np.savetxt(result_path, detection_array_2d, fmt = '%i', delimiter = ",")
+    # print(detection_array_2d)
+
     print("EXPERIMENTS COMPLETE: {}".format(result_bag_name))
     return corners_dict    

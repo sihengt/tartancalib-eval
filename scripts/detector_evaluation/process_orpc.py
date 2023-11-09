@@ -73,7 +73,6 @@ def numpify_corners(filepath, data_index, coord_index):
             frame_iterator += 1
             frame_n, corner_id, x, y = int(frame_n), int(corner_id), float(x), float(y)
             frame_corners = [[frame_n, corner_id, x, y],] # "Re-initialization condition"
-    all_corners.append([sorted_corners])
 
     # To save this corner.
     # np_corners = np.array(all_corners)

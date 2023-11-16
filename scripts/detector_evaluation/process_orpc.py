@@ -71,8 +71,15 @@ def numpify_corners(filepath, data_index, coord_index):
             sorted_corners = sorted(frame_corners, key=lambda x: x[1])
             all_corners.append(sorted_corners)
             frame_iterator += 1
+            # To keep the index of list same to the frame id, for those frames with no detections, add empty list to all_corners
+            while (frame_iterator != int(frame_n)):
+                all_corners.append([])
+                frame_iterator += 1
             frame_n, corner_id, x, y = int(frame_n), int(corner_id), float(x), float(y)
             frame_corners = [[frame_n, corner_id, x, y],] # "Re-initialization condition"
+    # last frame
+    sorted_corners = sorted(frame_corners, key=lambda x: x[1])
+    all_corners.append(sorted_corners)
 
     # To save this corner.
     # np_corners = np.array(all_corners)

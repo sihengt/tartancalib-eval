@@ -120,7 +120,6 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     def record_detection_to_table(np_corners, detect_array, detector_idx):
         for frames in np_corners:
             for corner_frame in frames:
-                print("corner is", corner_frame)
                 frame_id = corner_frame[0]
                 corner_id = corner_frame[1]
                 detect_array[frame_id, corner_id, detector_idx] = 1
@@ -152,9 +151,9 @@ def run_experiments(image_folder, results_filepath, repo_folder):
     np_corners = np.load(aruco_path, allow_pickle = True)
     record_detection_to_table(np_corners, detection_array, 5)
 
-    result_path = os.path.join(results_filepath, "detection_results-" + result_bag_name + ".csv")
+    result_path = os.path.join(results_filepath, "detection_results-" + result_bag_name + ".npy")
     detection_array_2d = detection_array.reshape(-1, 6)
-    np.savetxt(result_path, detection_array_2d, fmt = '%i', delimiter = ",")
+    np.save(result_path, detection_array_2d)
     # print(detection_array_2d)
 
     print("EXPERIMENTS COMPLETE: {}".format(result_bag_name))
